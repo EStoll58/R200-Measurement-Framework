@@ -6,4 +6,16 @@
     <RootNamespace>R2000_Measurement</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Config.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Config.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\R2000-Library\R2000-Library.csproj" />
+  </ItemGroup>
+
 </Project>
