@@ -295,7 +295,7 @@ public class Data
                 
                 if(magicok == true)
                 {
-                    Console.WriteLine("All good!!");
+                    //Console.WriteLine("All good!!");
                     //Console.WriteLine("Last packet number was:" + Var.lastpacketnumber + "\r\n");
                     for(int i = 0; i < Var.packetamount; i++)
                     {

@@ -10,9 +10,9 @@ public class Configuration
 {
     public void config()
     {
-        //string text = System.IO.File.ReadAllText(Environment.CurrentDirectory + @"\Config.txt");
+        string text = System.IO.File.ReadAllText(Environment.CurrentDirectory + @"\Config.txt"); // Run this to make the executable
 
-        string text = System.IO.File.ReadAllText(Environment.CurrentDirectory + @"\..\..\..\Config.txt"); //When switching to Visual Studio, I had to go up 3 files for the debug to work.
+        //string text = System.IO.File.ReadAllText(Environment.CurrentDirectory + @"\..\..\..\Config.txt"); //When switching to Visual Studio, I had to go up 3 files for the debug to work.
 
         string[] stringcharacteristics = { "IPaddress", "SamplesPerScan", "ScanDirection", "ScanFrequency", "FilterType", "FilterWidth", "ScanDataType", "ScanStartAngle", "ScanFieldAngle", "MaxRange", "HMIDisplayType", "HMIDisplayText1", "HMIDisplayText2" };
 
