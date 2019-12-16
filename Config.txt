@@ -25,5 +25,5 @@ Watchdog=on;				// Turn Watchdog on/off, watchdog should be kept on. not closing
 WatchdogTimeout=60000;		// Sets the time limit when a handle will be closed if watchdog is not fed. value in miliseconds. values can range from 1 - 500 seconds. 
 
 //Background data settings
-MaxRange=2000;                  // Setting max background distnace for data
+MaxRange=3000;                  // Setting max background distnace for data
 

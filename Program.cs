@@ -142,7 +142,7 @@ public class program
             {
                 command.watchdog();
                 data.bulkdatatcp();
-                Console.WriteLine("All Good!");
+                //Console.WriteLine("All Good!");
                 calculations.Width(); 
             }
         }

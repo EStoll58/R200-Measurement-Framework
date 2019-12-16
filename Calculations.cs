@@ -22,22 +22,30 @@ class Calculations
 
     public void Width()
     {
-        int backgroundbuffer = 50;
+        int backgroundbuffer = 60;
+        int objectbuffer = 30;
         int[] objectdistance = new int[2];
-        decimal[] objectangle = new decimal[2];
+        double[] objectangle = new double[2];
         bool leadingedge = false;
-        bool trailingedge = false;
+
+        int[] objectindex = new int[2];
         Console.WriteLine("Calculating Width");
         int i;
 
         for (i = 0; i < Var.numscanpoints; i++)
         {
+            // Find the first leading edge when compared to background
             if (Var.measurmentdata[i] <= Var.background[i] - backgroundbuffer)
             {
-                Console.WriteLine("Object Found0");
-                objectdistance[0] = Var.measurmentdata[i];
-                objectangle[0] = Var.angulardata[i];
+                //Console.WriteLine("Object Found0");
+                objectindex[0] = i;
                 leadingedge = true;
+
+                if (i == 0)
+                {
+                    //Console.WriteLine("False");
+                    leadingedge = false;
+                }
                 break;
             }
             else
@@ -45,46 +53,132 @@ class Calculations
                 //Console.WriteLine("Nothing Detected0");
                 if (i == Var.numscanpoints)
                 {
-                    Console.WriteLine("No Object Found0");
-                    objectdistance[0] = 'n';
-                    objectangle[0] = 'n';
+                    //Console.WriteLine("No Object Found0");
                     leadingedge = false;
                     break;                    
                 }
             }
         }
 
-        Console.WriteLine("i = " + i);
-
-        
+        bool trailingedge = false;
         if (leadingedge == true)
-        {
-            Console.WriteLine("Object was found!");
-            for (i = i; i < Var.numscanpoints; i++)
+        {        
+            
+            // Find trailing edge when compared to background
+            int j = i;
+            for (i = j; i < Var.numscanpoints; i++)
             {
                 if (Var.measurmentdata[i] >= Var.background[i] - backgroundbuffer)
                 {
-                    Console.WriteLine("Object Found1");
-                    objectdistance[1] = Var.measurmentdata[i];
-                    objectangle[1] = Var.angulardata[i];
+                    //Console.WriteLine("Object Found1");
+                    objectindex[1] = i;
                     trailingedge = true;
+
+                    if (i == Var.numscanpoints - 1 || i == j)
+                    {
+                        //Console.WriteLine("False");
+                        trailingedge = false;
+
+                    }
                     break;
                 }
                 else
                 {
-                    //Console.WriteLine("Nothing Dectected1");
-                    if (i == Var.numscanpoints)
-                    {
-                        Console.WriteLine("No Object Found1");
-                        objectdistance[1] = 'n';
-                        objectangle[1] = 'n';
-                        trailingedge = false;
-                    }
+                    trailingedge = false;
                 }
+                //Console.Write(" " + i);
             }
         }
 
-        Console.WriteLine("i = " + i);
+
+
+        if (leadingedge == true && trailingedge == true)
+        {
+            /*
+            Console.WriteLine("Object Distance Leading Edge = " + objectdistance[0]);
+            Console.WriteLine("Object Angle Leading Edge = " + objectangle[0]);
+            Console.WriteLine("Object Distance Trailing Edge = " + objectdistance[1]);
+            Console.WriteLine("Object Angle Trailing Edge = " + objectangle[1]);
+            */
+
+            // Find the midpoint of the object, distance
+            int profilesize = (objectindex[1] - objectindex[0]);
+
+            int[] profiledistance = new int[profilesize];
+            double[] profileangle = new double[profilesize];
+            int[] midpoints = new int[Convert.ToInt32(Math.Ceiling(profilesize * 0.05))];
+
+
+
+
+            double midpointssize = Math.Ceiling(profilesize * 0.05);
+            double midpointstart = Math.Ceiling(profilesize - midpointssize) / 2;
+
+            Array.Copy(Var.measurmentdata, objectindex[0], profiledistance, 0, profilesize);
+            Array.Copy(profiledistance, Convert.ToInt32(midpointstart), midpoints, 0, Convert.ToInt32(midpointssize));
+
+            Array.Copy((Var.angulardata), objectindex[0], profileangle, 0, profilesize);
+
+
+            //Console.WriteLine("Profile = \r\n" + string.Join(" ", profile));
+            //Console.WriteLine("Midpoints = \r\n" + string.Join(" ", midpoints));
+
+            int sum = 0;
+            for (i = 0; i < midpoints.Length; i++)
+            {
+                sum = sum + midpoints[i];
+            }
+
+            double averagedistance = sum / midpoints.Length;
+
+            // Find angle
+
+            double angle = Var.angulardata[Convert.ToInt32(((objectindex[1] - objectindex[0]) / 2) + objectindex[0])];
+            Console.WriteLine("\r\n\r\n");
+            Console.WriteLine("Distance = " + averagedistance);
+            Console.WriteLine("Angle = " + angle);
+
+            for (i = 0; i < profiledistance.Length; i++)
+            {
+                if (profiledistance[i] > averagedistance + objectbuffer)
+                {
+                    //ignore
+                }
+                else
+                {
+                    objectdistance[0] = profiledistance[i];
+                    objectangle[0] = profileangle[i];
+                    break;
+                }
+            }
+
+            for (i = profiledistance.Length - 1; i > 0; i--)
+            {
+                if (profiledistance[i] > averagedistance + objectbuffer)
+                {
+                    //ignore
+                }
+                else
+                {
+                    objectdistance[1] = profiledistance[i];
+                    objectangle[1] = profileangle[i];
+                    break;
+                }
+            }
+
+            Console.WriteLine("Object Distance Leading Edge = " + objectdistance[0]);
+            Console.WriteLine("Object Angle Leading Edge = " + objectangle[0]);
+            Console.WriteLine("Object Distance Trailing Edge = " + objectdistance[1]);
+            Console.WriteLine("Object Angle Trailing Edge = " + objectangle[1]);
+
+            double[] radianangle = new double[2];
+            radianangle[0] = Math.PI * objectangle[0] / 180;
+            radianangle[1] = Math.PI * objectangle[1] / 180;
+
+            double width = Math.Round(Math.Sqrt((Math.Pow(objectdistance[0],2)) + (Math.Pow(objectdistance[1],2)) - (2 * objectdistance[0] * objectdistance[1]) * (Math.Cos(radianangle[0] - radianangle[1]))),2);
+            Console.WriteLine("Width = " + width);
+
+        }
 
 
 
