@@ -134,12 +134,15 @@ public class program
 
         command.watchdog();
 
+       
+
+        Console.WriteLine("\r\n\r\n\r\n\r\nPlease clear out objects in front of the R2000 to teach the background. Press enter when ready.");
+        Console.ReadKey();
+
         command.startstream();
         data.initialize(); //This gets our size of the scan Var.byteamount
         data.background();
 
-        
-        
         do
         {
             while (Console.KeyAvailable == false)
