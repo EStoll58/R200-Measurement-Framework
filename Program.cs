@@ -119,6 +119,7 @@ public class program
 
         //From R2000 Measurement:
         Calculations calculations = new Calculations();
+        
 
         //******** Start writing your code below this line ************
 
@@ -136,14 +137,30 @@ public class program
         command.startstream();
         data.initialize(); //This gets our size of the scan Var.byteamount
         data.background();
+
+        
+        
         do
         {
             while (Console.KeyAvailable == false)
             {
                 command.watchdog();
-                data.bulkdatatcp();
+                double[] averagewidth = new double[3];
+                for (int count = 0; count < 3; count++)
+                {
+                    data.bulkdatatcp();
+                    calculations.Width();
+                    averagewidth[count] = Calculations.width;
+                }
+                double sum = 0;
+                for (int count = 0; count < 3; count++)
+                {
+                    sum = sum + averagewidth[count];
+                }
+                double width = Math.Round(sum / 3,2);
+                Console.WriteLine("Width = " + width);
                 //Console.WriteLine("All Good!");
-                calculations.Width(); 
+                 
             }
         }
         while (Console.ReadKey(true).Key != ConsoleKey.Enter);
